@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio PSeInt Pro | Simulador, Consola y Diagramas de Flujo</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #f1f5f9;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --secondary: #0f172a;
+      --terminal-bg: #090d16;
+      --code-bg: #0d1117;
+      --border-color: #cbd5e1;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: #1e293b;
+      font-size: 1.05rem; /* Aumentado tamaño base */
+      line-height: 1.6;
+      padding-bottom: 70px;
+    }
+
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Navbar */
+    .navbar-pseint {
+      background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+      border-bottom: 3px solid #3b82f6;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      padding: 0.85rem 0;
+    }
+
+    .navbar-pseint .navbar-brand {
+      font-size: 1.35rem;
+    }
+
+    /* Contenedor Principal de Una Sola Columna */
+    .single-column-wrapper {
+      max-width: 1040px; /* Ampliado para dar más espacio a los textos grandes */
+      margin: 0 auto;
+    }
+
+    /* Tarjeta de Ejercicio */
+    .exercise-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      margin-bottom: 4rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .exercise-card:hover {
+      box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.14);
+    }
+
+    .exercise-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+      border-bottom: 2px solid #e2e8f0;
+      padding: 1.8rem 2.2rem;
+    }
+
+    .exercise-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .exercise-body {
+      padding: 2.2rem;
+    }
+
+    /* Bloques Verticales Internos */
+    .vertical-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .vertical-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 1.15rem; /* Aumentado */
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Ficha Pedagógica */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .info-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      padding: 1.2rem 1.25rem;
+    }
+
+    .info-box-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .info-box-text {
+      font-size: 1.02rem;
+      margin-bottom: 0;
+      color: #334155;
+    }
+
+    .logic-box {
+      font-size: 1.02rem;
+    }
+
+    .logic-box ol li {
+      margin-bottom: 0.4rem;
+    }
+
+    /* Código PSeInt */
+    .code-window {
+      background-color: var(--code-bg);
+      border-radius: 12px;
+      border: 1px solid #30363d;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+
+    .code-window-header {
+      background-color: #161b22;
+      padding: 12px 20px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .code-window pre {
+      margin: 0;
+      padding: 22px;
+      color: #e6edf3;
+      font-size: 1.1rem; /* Código con letra grande y cómoda */
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .kw { color: #ff7b72; font-weight: 700; }
+    .tp { color: #79c0ff; font-weight: 600; }
+    .st { color: #a5d6ff; }
+    .op { color: #d2a8ff; font-weight: 700; }
+    .nm { color: #7ee787; }
+
+    /* Diagrama de Flujo PSeInt */
+    .flowchart-window {
+      background-color: #ffffff;
+      background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .flowchart-svg {
+      max-width: 100%;
+      height: auto;
+      min-width: 620px;
+    }
+
+    /* Estilos de Nodos del Diagrama */
+    .fc-node {
+      transition: all 0.35s ease;
+    }
+
+    .fc-active rect, .fc-active polygon, .fc-active ellipse {
+      filter: drop-shadow(0 0 12px rgba(37, 99, 235, 0.8));
+      stroke: #1d4ed8 !important;
+      stroke-width: 3.8px !important;
+    }
+
+    .fc-inactive {
+      opacity: 0.35;
+    }
+
+    /* Ventana de Ejecución / Consola PSeInt */
+    .execution-panel {
+      background-color: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
+
+    .form-label-lg {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+      font-size: 1.05rem;
+      padding: 0.65rem 0.95rem;
+    }
+
+    .terminal-window {
+      background-color: var(--terminal-bg);
+      border-radius: 12px;
+      border: 1px solid #334155;
+      overflow: hidden;
+      box-shadow: 0 14px 28px -6px rgba(0, 0, 0, 0.45);
+      margin-top: 1.5rem;
+    }
+
+    .terminal-bar {
+      background-color: #1e293b;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+    }
+    .dot-r { background-color: #ef4444; }
+    .dot-y { background-color: #f59e0b; }
+    .dot-g { background-color: #10b981; }
+
+    .terminal-screen {
+      padding: 24px;
+      min-height: 165px;
+      color: #e2e8f0;
+      font-size: 1.12rem; /* Texto de terminal grande y nítido */
+      line-height: 1.7;
+    }
+
+    .term-sys { color: #94a3b8; }
+    .term-prompt { color: #f8fafc; font-weight: 500; }
+    .term-input { color: #38bdf8; font-weight: 700; }
+    .term-out-ok { color: #4ade80; font-weight: 800; font-size: 1.25rem; }
+    .term-out-warn { color: #fbbf24; font-weight: 800; font-size: 1.25rem; }
+    .term-out-err { color: #f87171; font-weight: 800; font-size: 1.25rem; }
+
+    /* Botones y Badges */
+    .badge-step {
+      background-color: #1e293b;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+
+    .badge-category {
+      font-size: 0.95rem;
+      padding: 7px 14px;
+      border-radius: 8px;
+    }
+
+    .delivery-banner {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #fff;
+      border-radius: 18px;
+      padding: 2.2rem;
+      margin-bottom: 3.5rem;
+      border-left: 8px solid #f59e0b;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+    }
+
+    .btn-exec {
+      font-size: 1.08rem;
+      padding: 0.7rem 1.5rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de Navegación Superior -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-pseint sticky-top">
+    <div class="container single-column-wrapper">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="#">
+        <i class="bi bi-cpu-fill text-info fs-3"></i>
+        <span>PSeInt Studio Pro</span>
+      </a>
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <div class="text-white fw-semibold d-none d-md-block" style="font-size: 1.05rem;">
+          Progreso de Tarea: <span class="badge bg-success ms-1 px-3 py-2" id="nav-progress" style="font-size: 1rem;">0 / 12</span>
+        </div>
+        <a href="#guia-rar" class="btn btn-warning fw-bold px-3 py-2" style="font-size: 0.95rem;">
+          <i class="bi bi-file-earmark-zip-fill me-1"></i> Formato de Entrega (.RAR)
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenedor Único Central (Sin pantallas divididas) -->
+  <main class="container single-column-wrapper mt-4">
+
+    <!-- Bloque 1: Instrucciones de Entrega Universitaria -->
+    <section id="guia-rar" class="delivery-banner">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0 text-warning" style="font-size: 1.85rem;">
+          <i class="bi bi-folder-check me-2"></i>Instrucciones Oficiales de Entrega Universitaria
+        </h2>
+        <span class="badge bg-danger fs-6 px-3 py-2 mt-2 mt-md-0">Formato Obligatorio: Archivo .RAR</span>
+      </div>
+      <p class="text-light opacity-90 mb-4" style="font-size: 1.1rem;">
+        Cada uno de los 12 ejercicios está ordenado de arriba hacia abajo de forma completa. Tienes acceso al enunciado detallado, el código fuente listo para PSeInt, la simulación interactiva del diagrama de flujo y la consola de ejecución con letras grandes para capturas perfectas.
+      </p>
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="p-3 rounded bg-white bg-opacity-10 h-100 border border-secondary">
+            <h5 class="fw-bold text-info"><i class="bi bi-1-circle-fill me-1"></i> Capturas Requeridas</h5>
+            <p class="mb-0 text-light" style="font-size: 0.98rem;">
+              Por cada ejercicio debes tomar captura de pantalla del <strong>código</strong>, el <strong>diagrama de flujo</strong> y la <strong>consola de ejecución</strong> con los datos ingresados y su resultado final.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 rounded bg-white bg-opacity-10 h-100 border border-secondary">
+            <h5 class="fw-bold text-info"><i class="bi bi-2-circle-fill me-1"></i> Organización</h5>
+            <p class="mb-0 text-light" style="font-size: 0.98rem;">
+              Guarda tus archivos de código <code>.psc</code> junto con la subcarpeta <code>Capturas_Ejecucion/</code> numeradas del Ejercicio 01 al 12.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 rounded bg-white bg-opacity-10 h-100 border border-secondary">
+            <h5 class="fw-bold text-info"><i class="bi bi-3-circle-fill me-1"></i> Nombre del Archivo .RAR</h5>
+            <p class="mb-2 text-light" style="font-size: 0.98rem;">Comprime todo bajo la nomenclatura:</p>
+            <code class="d-block p-2 bg-dark text-warning rounded text-break user-select-all fw-bold" style="font-size: 0.92rem;">
+              NOMBRE_APELLIDO_EJERCICIOS_BASICO_ALGORITMOS.rar
+            </code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Barra de Filtro Rápido y Búsqueda -->
+    <section class="card border-0 shadow-sm p-3 mb-5 rounded-4">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-5">
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-primary fs-5"></i></span>
+            <input type="text" id="searchInput" class="form-control border-start-0 bg-light" placeholder="Buscar ejercicio por título, operador o tema..." style="font-size: 1.05rem;">
+          </div>
+        </div>
+        <div class="col-md-7 d-flex flex-wrap gap-2 justify-content-md-end">
+          <button class="btn btn-dark filter-btn active px-3 py-2 fw-semibold" data-filter="all">Todos (12)</button>
+          <button class="btn btn-outline-primary filter-btn px-3 py-2 fw-semibold" data-filter="io">Entrada / Salida (1-2)</button>
+          <button class="btn btn-outline-primary filter-btn px-3 py-2 fw-semibold" data-filter="si">Condicionales Si (3-6)</button>
+          <button class="btn btn-outline-primary filter-btn px-3 py-2 fw-semibold" data-filter="logicos">Lógicos & Final (7-12)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contenedor donde se renderizan los 12 ejercicios de arriba hacia abajo -->
+    <div id="exercises-container"></div>
+
+  </main>
+
+  <!-- Toast de Copiado -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="copyToast" class="toast align-items-center text-white bg-success border-0 p-2" role="alert">
+      <div class="d-flex">
+        <div class="toast-body fw-bold" style="font-size: 1.1rem;">
+          <i class="bi bi-check-circle-fill me-2 fs-5"></i> ¡Código PSeInt copiado al portapapeles!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // =========================================================================
+    // BASE DE DATOS DETALLADA DE LOS 12 EJERCICIOS
+    // =========================================================================
+    const exercisesData = [
+      {
+        id: 1,
+        category: 'io',
+        title: 'EJERCICIO #1: SALUDO AL USUARIO (INPUT Y OUTPUT)',
+        badge: 'Entrada / Salida Básica',
+        concept: 'Introduce los conceptos fundamentales de Entrada (Leer datos que el usuario introduce por teclado) y Salida (Escribir información en pantalla).',
+        context: 'Una aplicación solicita el nombre de un usuario y luego le da la bienvenida personalizada.',
+        statement: 'Crear un programa que solicite el nombre de una persona y luego muestre un mensaje de bienvenida.',
+        steps: [
+          'El programa solicita el nombre mediante la instrucción Escribir.',
+          'El usuario escribe su nombre y se almacena con la instrucción Leer.',
+          'El programa muestra un saludo personalizado concatenando el texto fijo con la variable.'
+        ],
+        operators: 'Lectura (Leer), Salida (Escribir), Concatenación (,)',
+        pscCode: `Proceso SaludoUsuario
+
+    Definir nombre Como Cadena;
+
+    Escribir 'Ingrese su nombre';
+    Leer nombre;
+
+    Escribir 'Bienvenido ', nombre;
+
+FinProceso`,
+        inputs: [
+          { id: 'nombre', label: 'Ingrese su nombre (Tipo Cadena):', type: 'text', placeholder: 'Ej: Carlos Santana', defaultVal: 'Carlos Santana' }
+        ]
+      },
+      {
+        id: 2,
+        category: 'io',
+        title: 'EJERCICIO #2: SUMA DE DOS NÚMEROS (INPUT Y OUTPUT)',
+        badge: 'Variables & Aritmética',
+        concept: 'Uso de variables numéricas enteras, captura de datos, procesamiento aritmético mediante asignación (<-) y visualización de resultados.',
+        context: 'Una calculadora necesita capturar dos números por teclado y desplegar su suma exacta.',
+        statement: 'Solicitar dos números enteros y mostrar la suma total.',
+        steps: [
+          'Leer número 1 (n1).',
+          'Leer número 2 (n2).',
+          'Sumar ambos valores y guardarlos en la variable suma (suma <- n1 + n2).',
+          'Mostrar el resultado final en pantalla.'
+        ],
+        operators: 'Asignación ( <- ), Operador suma ( + )',
+        pscCode: `Proceso SumaNumeros
+
+    Definir n1, n2, suma Como Entero;
+
+    Escribir 'Ingrese numero 1';
+    Leer n1;
+
+    Escribir 'Ingrese numero 2';
+    Leer n2;
+
+    suma <- n1 + n2;
+
+    Escribir 'Resultado: ', suma;
+
+FinProceso`,
+        inputs: [
+          { id: 'n1', label: 'Ingrese número 1 (Entero):', type: 'number', placeholder: 'Ej: 25', defaultVal: '25' },
+          { id: 'n2', label: 'Ingrese número 2 (Entero):', type: 'number', placeholder: 'Ej: 40', defaultVal: '40' }
+        ]
+      },
+      {
+        id: 3,
+        category: 'si',
+        title: 'EJERCICIO #3: MAYOR DE EDAD (ESTRUCTURA SI)',
+        badge: 'Condicional Doble (Si / SiNo)',
+        concept: 'Estructura condicional que evalúa una expresión lógica y bifurca el flujo del algoritmo hacia dos caminos mutuamente excluyentes.',
+        context: 'Un sistema electoral valida si un ciudadano tiene 18 años o más para ejercer el voto.',
+        statement: 'Solicitar la edad de una persona y determinar si es mayor de edad.',
+        steps: [
+          'Solicitar y leer la variable edad.',
+          'Evaluar la condición relacional: edad >= 18.',
+          'Si es Verdadero muestra "Es mayor de edad"; si es Falso muestra "Es menor de edad".'
+        ],
+        operators: '>= (Mayor o igual que), Si ... Entonces ... SiNo',
+        pscCode: `Proceso MayorEdad
+
+    Definir edad Como Entero;
+
+    Escribir 'Ingrese edad';
+    Leer edad;
+
+    Si edad >= 18 Entonces
+        Escribir 'Es mayor de edad';
+    SiNo
+        Escribir 'Es menor de edad';
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'edad', label: 'Ingrese edad (Entero):', type: 'number', placeholder: 'Ej: 19', defaultVal: '19' }
+        ]
+      },
+      {
+        id: 4,
+        category: 'si',
+        title: 'EJERCICIO #4: NÚMERO POSITIVO O NEGATIVO (SI)',
+        badge: 'Operadores Relacionales',
+        concept: 'Comparación numérica utilizando operadores relacionales respecto al origen (cero).',
+        context: 'Un sistema matemático identifica con precisión si un valor ingresado es positivo.',
+        statement: 'Solicitar un número y determinar si es positivo o en su defecto negativo/cero.',
+        steps: [
+          'Capturar un número entero.',
+          'Comparar si el número es estrictamente mayor que cero (numero > 0).',
+          'Mostrar si es positivo o si es negativo/cero.'
+        ],
+        operators: '> (Mayor estricto que)',
+        pscCode: `Proceso NumeroPositivo
+
+    Definir numero Como Entero;
+
+    Escribir 'Ingrese numero';
+    Leer numero;
+
+    Si numero > 0 Entonces
+        Escribir 'Numero positivo';
+    SiNo
+        Escribir 'Numero negativo o cero';
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'numero', label: 'Ingrese un número (Entero positivo o negativo):', type: 'number', placeholder: 'Ej: 14 o -8', defaultVal: '14' }
+        ]
+      },
+      {
+        id: 5,
+        category: 'si',
+        title: 'EJERCICIO #5: EVALUACIÓN ACADÉMICA (SI ANIDADO)',
+        badge: 'Condicionales Anidados',
+        concept: 'Condiciones dentro de la rama SiNo de otra condición para clasificar múltiples rangos excluyentes.',
+        context: 'Una universidad clasifica estudiantes según sus notas finales.',
+        statement: 'Solicitar una nota y clasificar al estudiante en Excelente, Aprobado o Reprobado.',
+        steps: [
+          'Si la nota es 90 o más → Mostrar EXCELENTE.',
+          'Si no llega a 90, evaluar dentro del SiNo si la nota es 70 o más → Mostrar APROBADO.',
+          'Si es menor de 70 → Mostrar REPROBADO.'
+        ],
+        operators: '>= (Mayor o igual que), Si Anidado múltiple',
+        pscCode: `Proceso EvaluacionAcademica
+
+    Definir nota Como Entero;
+
+    Escribir 'Ingrese nota';
+    Leer nota;
+
+    Si nota >= 90 Entonces
+        Escribir 'EXCELENTE';
+    SiNo
+        Si nota >= 70 Entonces
+            Escribir 'APROBADO';
+        SiNo
+            Escribir 'REPROBADO';
+        FinSi
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'nota', label: 'Ingrese nota del estudiante (0 - 100):', type: 'number', placeholder: 'Ej: 94', defaultVal: '94' }
+        ]
+      },
+      {
+        id: 6,
+        category: 'si',
+        title: 'EJERCICIO #6: DESCUENTO EN TIENDA (SI ANIDADO)',
+        badge: 'Decisiones Escalonadas',
+        concept: 'Uso de múltiples decisiones dependientes sobre variables de tipo numérico Real (con decimales).',
+        context: 'Una tienda por departamentos premia compras escalonadas con descuentos del 20%, 10% o sin descuento.',
+        statement: 'Determinar el porcentaje de descuento que recibe un cliente según el monto de su compra.',
+        steps: [
+          'Monto de 1000 o más → Descuento 20%.',
+          'Monto de 500 hasta 999.99 → Descuento 10%.',
+          'Menos de 500 → Sin descuento.'
+        ],
+        operators: '>= (Mayor o igual que) con tipo Real',
+        pscCode: `Proceso Descuentos
+
+    Definir compra Como Real;
+
+    Escribir 'Ingrese monto compra';
+    Leer compra;
+
+    Si compra >= 1000 Entonces
+        Escribir 'Descuento 20%';
+    SiNo
+        Si compra >= 500 Entonces
+            Escribir 'Descuento 10%';
+        SiNo
+            Escribir 'Sin descuento';
+        FinSi
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'compra', label: 'Ingrese monto de la compra ($):', type: 'number', placeholder: 'Ej: 1250', defaultVal: '1250' }
+        ]
+      },
+      {
+        id: 7,
+        category: 'logicos',
+        title: 'EJERCICIO #7: APROBACIÓN CON OPERADOR Y (AND)',
+        badge: 'Conjunción Lógica (Y)',
+        concept: 'Uso del operador lógico Y (AND), el cual exige que TODAS las condiciones unidas sean verdaderas obligatoriamente.',
+        context: 'Un estudiante aprueba una asignatura únicamente si cumple los dos requisitos: Asistencia >= 80 Y Nota >= 70.',
+        statement: 'Solicitar porcentaje de asistencia y nota final para determinar si aprueba.',
+        steps: [
+          'Leer el porcentaje de asistencia y la nota.',
+          'Verificar que Asistencia >= 80 Y Nota >= 70 se cumplan al mismo tiempo.',
+          'Si ambas se cumplen muestra APROBADO; si alguna falla, muestra REPROBADO.'
+        ],
+        operators: 'Y (AND lógico), >= (Mayor o igual que)',
+        pscCode: `Proceso AprobacionEstudiante
+
+    Definir asistencia, nota Como Entero;
+
+    Escribir 'Ingrese asistencia';
+    Leer asistencia;
+
+    Escribir 'Ingrese nota';
+    Leer nota;
+
+    Si asistencia >= 80 Y nota >= 70 Entonces
+        Escribir 'APROBADO';
+    SiNo
+        Escribir 'REPROBADO';
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'asistencia', label: 'Ingrese asistencia (%):', type: 'number', placeholder: 'Ej: 85', defaultVal: '85' },
+          { id: 'nota', label: 'Ingrese nota final (0 - 100):', type: 'number', placeholder: 'Ej: 75', defaultVal: '75' }
+        ]
+      },
+      {
+        id: 8,
+        category: 'logicos',
+        title: 'EJERCICIO #8: DESCUENTO POR EDAD CON OPERADOR O (OR)',
+        badge: 'Disyunción Lógica (O)',
+        concept: 'Uso del operador lógico O (OR), donde basta con que AL MENOS UNA condición sea verdadera para aplicar.',
+        context: 'Un cine ofrece descuento a niños menores de 12 años O adultos mayores de 60 años.',
+        statement: 'Determinar si una persona recibe descuento en la boletería según su edad.',
+        steps: [
+          'Leer la edad del espectador.',
+          'Evaluar si es niño (edad < 12) O adulto mayor (edad > 60).',
+          'Mostrar si tiene descuento o no.'
+        ],
+        operators: 'O (OR lógico), < (Menor que), > (Mayor que)',
+        pscCode: `Proceso DescuentoCine
+
+    Definir edad Como Entero;
+
+    Escribir 'Ingrese edad';
+    Leer edad;
+
+    Si edad < 12 O edad > 60 Entonces
+        Escribir 'Tiene descuento';
+    SiNo
+        Escribir 'No tiene descuento';
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'edad', label: 'Ingrese edad del espectador:', type: 'number', placeholder: 'Ej: 10 o 65', defaultVal: '65' }
+        ]
+      },
+      {
+        id: 9,
+        category: 'logicos',
+        title: 'EJERCICIO #9: PRODUCTO AGOTADO CON OPERADOR NO (NOT)',
+        badge: 'Negación Lógica (NO)',
+        concept: 'El operador lógico NO (NOT) invierte el valor de verdad de una variable lógica (Falso se vuelve Verdadero, y viceversa).',
+        context: 'Un sistema de inventario detecta si un producto está agotado invirtiendo el valor de la variable disponible.',
+        statement: 'Asignar disponible en Falso y evaluar con el operador NO si está agotado.',
+        steps: [
+          'Definir disponible Como Logico.',
+          'Asignar disponible <- Falso.',
+          'Evaluar Si NO disponible Entonces (como es Falso, NO disponible es Verdadero) y mostrar "Producto agotado".'
+        ],
+        operators: 'NO (NOT lógico), Tipo Logico (Verdadero / Falso)',
+        pscCode: `Proceso Inventario
+
+    Definir disponible Como Logico;
+
+    disponible <- Falso;
+
+    Si NO disponible Entonces
+        Escribir 'Producto agotado';
+    FinSi
+
+FinProceso`,
+        inputs: [
+          {
+            id: 'disponible',
+            label: 'Valor de la variable lógica "disponible":',
+            type: 'select',
+            options: [
+              { value: 'false', text: 'Falso (Sin stock disponible - Caso del algoritmo original)' },
+              { value: 'true', text: 'Verdadero (Con stock disponible)' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 10,
+        category: 'logicos',
+        title: 'EJERCICIO #10: ACCESO A UNIVERSIDAD (AND + OR + SI ANIDADO)',
+        badge: 'Lógica Combinada',
+        concept: 'Combinación simultánea de operadores Y, O junto con estructuras condicionales anidadas.',
+        context: 'Una universidad clasifica aspirantes: BECA COMPLETA (edad >= 18 Y nota >= 90), ADMITIDO (edad >= 18 O nota >= 75), o RECHAZADO.',
+        statement: 'Determinar el estatus de ingreso de un aspirante universitario.',
+        steps: [
+          'Beca Completa → Cumple ambos: edad >= 18 Y nota >= 90.',
+          'Admitido → Si no tuvo beca, cumple al menos uno: edad >= 18 O nota >= 75.',
+          'Rechazado → Menor de 18 y con nota menor a 75.'
+        ],
+        operators: 'Y (AND), O (OR), >=, Si Anidado',
+        pscCode: `Proceso Universidad
+
+    Definir edad, nota Como Entero;
+
+    Escribir 'Ingrese edad';
+    Leer edad;
+
+    Escribir 'Ingrese nota';
+    Leer nota;
+
+    Si edad >= 18 Y nota >= 90 Entonces
+        Escribir 'BECA COMPLETA';
+    SiNo
+        Si edad >= 18 O nota >= 75 Entonces
+            Escribir 'ADMITIDO';
+        SiNo
+            Escribir 'RECHAZADO';
+        FinSi
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'edad', label: 'Ingrese edad del aspirante:', type: 'number', placeholder: 'Ej: 19', defaultVal: '19' },
+          { id: 'nota', label: 'Ingrese nota de admisión:', type: 'number', placeholder: 'Ej: 94', defaultVal: '94' }
+        ]
+      },
+      {
+        id: 11,
+        category: 'logicos',
+        title: 'EJERCICIO #11: CONTRATACIÓN DE EMPLEADO (Y + O + NO + SI ANIDADO)',
+        badge: 'Integración de Operadores',
+        concept: 'Integración completa de variables enteras y lógicas con conjunción (Y), disyunción (O), negación (NO) y condicional anidado.',
+        context: 'Recursos Humanos evalúa candidatos: debe ser mayor de edad y NO sancionado; luego evalúa experiencia o edad para dictaminar contratación.',
+        statement: 'Determinar si un candidato es Contratado, queda En Evaluación o No Cumple Requisitos.',
+        steps: [
+          'Filtro obligatorio: edad >= 18 Y NO sancionado.',
+          'Si pasa el filtro: experiencia >= 5 O edad >= 30 → CONTRATADO.',
+          'Si pasa el filtro pero no alcanza experiencia/edad → EN EVALUACION.',
+          'Si no pasa el filtro principal → NO CUMPLE REQUISITOS.'
+        ],
+        operators: '>=, Y, O, NO, Si Anidado',
+        pscCode: `Proceso Contratacion
+
+    Definir edad, experiencia Como Entero;
+    Definir sancionado Como Logico;
+
+    Escribir 'Ingrese edad';
+    Leer edad;
+
+    Escribir 'Ingrese experiencia';
+    Leer experiencia;
+
+    sancionado <- Falso;
+
+    Si edad >= 18 Y NO sancionado Entonces
+        Si experiencia >= 5 O edad >= 30 Entonces
+            Escribir 'CONTRATADO';
+        SiNo
+            Escribir 'EN EVALUACION';
+        FinSi
+    SiNo
+        Escribir 'NO CUMPLE REQUISITOS';
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'edad', label: 'Ingrese edad del candidato:', type: 'number', placeholder: 'Ej: 28', defaultVal: '28' },
+          { id: 'experiencia', label: 'Años de experiencia laboral:', type: 'number', placeholder: 'Ej: 6', defaultVal: '6' },
+          {
+            id: 'sancionado',
+            label: '¿El candidato tiene sanción disciplinaria?',
+            type: 'select',
+            options: [
+              { value: 'false', text: 'Falso (Sin sanciones - Valor por defecto)' },
+              { value: 'true', text: 'Verdadero (Candidato sancionado)' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 12,
+        category: 'logicos',
+        title: '🏆 EJERCICIO #12: PROYECTO FINAL (INTEGRACIÓN TOTAL DE ALGORITMOS)',
+        badge: 'Proyecto Final Escolar',
+        concept: 'Síntesis total de algoritmos: Entrada/Salida, Variables, Operadores Aritméticos, Relacionales, Lógicos (Y, O, NO) y Triple Si Anidado.',
+        context: 'Clasificación integral de alumnos en: ESTUDIANTE DE HONOR, APROBADO, REPROBADO o NO CUMPLE REQUISITOS.',
+        statement: 'Evaluar asistencia, calificación y estatus disciplinario simultáneamente.',
+        steps: [
+          'Filtro indispensable: Asistencia >= 80% Y NO sancionado.',
+          'Nivel Honor: Si cumple filtro y nota >= 90 → ESTUDIANTE DE HONOR.',
+          'Nivel Aprobado: Si nota >= 70 O asistencia >= 95 → APROBADO.',
+          'Nivel Reprobado: Si no alcanza nota ni superasistencia → REPROBADO.',
+          'Si no cumple el filtro indispensable → NO CUMPLE REQUISITOS.'
+        ],
+        operators: 'Leer, Escribir, <-, >=, Y, O, NO, Triple Si Anidado',
+        pscCode: `Proceso ProyectoFinal
+
+    Definir asistencia, nota Como Entero;
+    Definir sancionado Como Logico;
+
+    Escribir 'Ingrese asistencia';
+    Leer asistencia;
+
+    Escribir 'Ingrese nota';
+    Leer nota;
+
+    sancionado <- Falso;
+
+    Si asistencia >= 80 Y NO sancionado Entonces
+        Si nota >= 90 Entonces
+            Escribir 'ESTUDIANTE DE HONOR';
+        SiNo
+            Si nota >= 70 O asistencia >= 95 Entonces
+                Escribir 'APROBADO';
+            SiNo
+                Escribir 'REPROBADO';
+            FinSi
+        FinSi
+    SiNo
+        Escribir 'NO CUMPLE REQUISITOS';
+    FinSi
+
+FinProceso`,
+        inputs: [
+          { id: 'asistencia', label: 'Ingrese porcentaje de asistencia (0 - 100):', type: 'number', placeholder: 'Ej: 88', defaultVal: '88' },
+          { id: 'nota', label: 'Ingrese nota de calificación (0 - 100):', type: 'number', placeholder: 'Ej: 94', defaultVal: '94' },
+          {
+            id: 'sancionado',
+            label: '¿Tiene sanción disciplinaria?',
+            type: 'select',
+            options: [
+              { value: 'false', text: 'Falso (Sin sanción disciplinaria)' },
+              { value: 'true', text: 'Verdadero (Con sanción disciplinaria)' }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // RESALTADOR DE SINTAXIS PSEINT
+    // =========================================================================
+    function highlightPSeInt(code) {
+      let html = code
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      html = html.replace(/('[^']*')/g, '<span class="st">$1</span>');
+      html = html.replace(/\b(Proceso|FinProceso|Definir|Como|Escribir|Leer|Si|Entonces|SiNo|FinSi)\b/g, '<span class="kw">$1</span>');
+      html = html.replace(/\b(Cadena|Entero|Real|Logico|Falso|Verdadero)\b/g, '<span class="tp">$1</span>');
+      html = html.replace(/\b(Y|O|NO)\b/g, '<span class="op">$1</span>');
+      html = html.replace(/(&lt;-|&gt;=|&lt;=|&gt;|&lt;|\+)/g, '<span class="op">$1</span>');
+      html = html.replace(/\b(\d+)\b/g, '<span class="nm">$1</span>');
+
+      return html;
+    }
+
+    // =========================================================================
+    // GENERADOR DE DIAGRAMAS DE FLUJO SVG ESTILO PSEINT CON TEXTOS AMPLIADOS
+    // =========================================================================
+    function generateFlowchartSVG(id) {
+      const defs = `
+        <defs>
+          <marker id="arrow-${id}" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155" />
+          </marker>
+        </defs>
+      `;
+
+      // Ejercicio 1: Secuencial Saludo
+      if (id === 1) {
+        return `
+          <svg class="flowchart-svg" viewBox="0 0 640 430">
+            ${defs}
+            <line x1="320" y1="50" x2="320" y2="365" stroke="#334155" stroke-width="2.5" />
+            <g class="fc-node fc-step-all">
+              <ellipse cx="320" cy="30" rx="115" ry="24" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="37" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#1e293b">Proceso SaludoUsuario</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <rect x="185" y="75" width="270" height="40" rx="6" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="100" text-anchor="middle" font-size="14" font-weight="600" fill="#1e293b">Definir nombre Como Cadena</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <polygon points="190,135 450,135 425,178 165,178" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="310" y="162" text-anchor="middle" font-size="14" font-weight="bold" fill="#064e3b">Escribir 'Ingrese su nombre'</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <polygon points="210,205 430,205 405,248 185,248" fill="#fbcfe8" stroke="#db2777" stroke-width="2.5"/>
+              <text x="310" y="232" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#831843">Leer nombre</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <polygon points="180,275 460,275 435,318 155,318" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="310" y="302" text-anchor="middle" font-size="14" font-weight="bold" fill="#064e3b">Escribir 'Bienvenido ', nombre</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <ellipse cx="320" cy="375" rx="100" ry="24" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="382" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#1e293b">FinProceso</text>
+            </g>
+          </svg>
+        `;
+      }
+
+      // Ejercicio 2: Secuencial Suma
+      if (id === 2) {
+        return `
+          <svg class="flowchart-svg" viewBox="0 0 640 480">
+            ${defs}
+            <line x1="320" y1="45" x2="320" y2="425" stroke="#334155" stroke-width="2.5" />
+            <g class="fc-node fc-step-all">
+              <ellipse cx="320" cy="28" rx="110" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="35" text-anchor="middle" font-size="14.5" font-weight="bold">Proceso SumaNumeros</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <rect x="170" y="70" width="300" height="38" rx="6" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="94" text-anchor="middle" font-size="14" font-weight="600">Definir n1, n2, suma Como Entero</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <polygon points="215,128 425,128 400,168 190,168" fill="#fbcfe8" stroke="#db2777" stroke-width="2.5"/>
+              <text x="310" y="153" text-anchor="middle" font-size="14" font-weight="bold">Leer n1</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <polygon points="215,188 425,188 400,228 190,228" fill="#fbcfe8" stroke="#db2777" stroke-width="2.5"/>
+              <text x="310" y="213" text-anchor="middle" font-size="14" font-weight="bold">Leer n2</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <rect x="200" y="250" width="240" height="42" rx="6" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="276" text-anchor="middle" font-size="14.5" font-weight="bold">suma &lt;- n1 + n2</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <polygon points="185,315 455,315 430,358 160,358" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="310" y="341" text-anchor="middle" font-size="14" font-weight="bold">Escribir 'Resultado: ', suma</text>
+            </g>
+            <g class="fc-node fc-step-all">
+              <ellipse cx="320" cy="425" rx="95" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="432" text-anchor="middle" font-size="14.5" font-weight="bold">FinProceso</text>
+            </g>
+          </svg>
+        `;
+      }
+
+      // Ejercicio 9: Condicional Simple (NO disponible)
+      if (id === 9) {
+        return `
+          <svg class="flowchart-svg" viewBox="0 0 660 450">
+            ${defs}
+            <line x1="330" y1="40" x2="330" y2="190" stroke="#334155" stroke-width="2.5" />
+            <polyline points="225,230 160,230 160,340 330,340" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="435,230 500,230 500,340 330,340" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <line x1="330" y1="340" x2="330" y2="400" stroke="#334155" stroke-width="2.5" />
+
+            <text x="175" y="220" font-size="14.5" font-weight="bold" fill="#16a34a">V (Sí)</text>
+            <text x="475" y="220" font-size="14.5" font-weight="bold" fill="#dc2626">F (No)</text>
+
+            <g class="fc-node fc-base">
+              <ellipse cx="330" cy="28" rx="110" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="330" y="35" text-anchor="middle" font-size="14.5" font-weight="bold">Proceso Inventario</text>
+            </g>
+            <g class="fc-node fc-base">
+              <rect x="205" y="70" width="250" height="38" rx="6" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="330" y="94" text-anchor="middle" font-size="14" font-weight="600">disponible &lt;- Falso</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="210,130 450,130 430,168 190,168" fill="#fbcfe8" stroke="#db2777" stroke-width="2.5"/>
+              <text x="320" y="154" text-anchor="middle" font-size="14" font-weight="600">Estado: disponible</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="330,190 435,230 330,270 225,230" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="330" y="235" text-anchor="middle" font-size="14" font-weight="bold">NO disponible</text>
+            </g>
+            <g class="fc-node fc-branch-true">
+              <polygon points="65,275 255,275 235,315 45,315" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="150" y="300" text-anchor="middle" font-size="13.5" font-weight="bold">'Producto agotado'</text>
+            </g>
+            <g class="fc-node fc-branch-false">
+              <rect x="415" y="278" width="170" height="36" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="5"/>
+              <text x="500" y="301" text-anchor="middle" font-size="13" font-weight="600" fill="#64748b">(Sin acción en F)</text>
+            </g>
+            <g class="fc-node fc-base">
+              <ellipse cx="330" cy="410" rx="95" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="330" y="417" text-anchor="middle" font-size="14.5" font-weight="bold">FinProceso</text>
+            </g>
+          </svg>
+        `;
+      }
+
+      // Ejercicios 3, 4, 7, 8: Condicional Doble Estándar (Si / SiNo)
+      if ([3, 4, 7, 8].includes(id)) {
+        const cfg = {
+          3: { proc: 'MayorEdad', read: 'Leer edad', cond: 'edad >= 18', tText: "'Es mayor de edad'", fText: "'Es menor de edad'" },
+          4: { proc: 'NumeroPositivo', read: 'Leer numero', cond: 'numero > 0', tText: "'Numero positivo'", fText: "'Numero negativo o cero'" },
+          7: { proc: 'AprobacionEstudiante', read: 'Leer asistencia, nota', cond: 'asist >= 80 Y nota >= 70', tText: "'APROBADO'", fText: "'REPROBADO'" },
+          8: { proc: 'DescuentoCine', read: 'Leer edad', cond: 'edad < 12 O edad > 60', tText: "'Tiene descuento'", fText: "'No tiene descuento'" }
+        }[id];
+
+        return `
+          <svg class="flowchart-svg" viewBox="0 0 700 450">
+            ${defs}
+            <line x1="350" y1="45" x2="350" y2="180" stroke="#334155" stroke-width="2.5" />
+            <polyline points="230,220 155,220 155,350 350,350" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="470,220 545,220 545,350 350,350" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <line x1="350" y1="350" x2="350" y2="405" stroke="#334155" stroke-width="2.5" />
+
+            <text x="175" y="210" font-size="14.5" font-weight="bold" fill="#16a34a">V (Sí)</text>
+            <text x="495" y="210" font-size="14.5" font-weight="bold" fill="#dc2626">F (SiNo)</text>
+
+            <g class="fc-node fc-base">
+              <ellipse cx="350" cy="28" rx="120" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="350" y="35" text-anchor="middle" font-size="14.5" font-weight="bold">Proceso ${cfg.proc}</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="235,90 475,90 450,132 210,132" fill="#fbcfe8" stroke="#db2777" stroke-width="2.5"/>
+              <text x="340" y="116" text-anchor="middle" font-size="14" font-weight="bold">${cfg.read}</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="350,180 470,220 350,260 230,220" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="350" y="225" text-anchor="middle" font-size="13.5" font-weight="bold">${cfg.cond}</text>
+            </g>
+            <g class="fc-node fc-branch-true">
+              <polygon points="45,275 265,275 245,318 25,318" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="145" y="301" text-anchor="middle" font-size="14" font-weight="bold">${cfg.tText}</text>
+            </g>
+            <g class="fc-node fc-branch-false">
+              <polygon points="435,275 665,275 645,318 415,318" fill="#fecaca" stroke="#dc2626" stroke-width="2.5"/>
+              <text x="540" y="301" text-anchor="middle" font-size="14" font-weight="bold">${cfg.fText}</text>
+            </g>
+            <g class="fc-node fc-base">
+              <ellipse cx="350" cy="415" rx="95" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="350" y="422" text-anchor="middle" font-size="14.5" font-weight="bold">FinProceso</text>
+            </g>
+          </svg>
+        `;
+      }
+
+      // Ejercicios 5, 6, 10: Si Anidado en Rama Falsa
+      if ([5, 6, 10].includes(id)) {
+        const cfg = {
+          5: { proc: 'EvaluacionAcademica', read: 'Leer nota', c1: 'nota >= 90', out1: "'EXCELENTE'", c2: 'nota >= 70', out2: "'APROBADO'", out3: "'REPROBADO'" },
+          6: { proc: 'Descuentos', read: 'Leer compra', c1: 'compra >= 1000', out1: "'Descuento 20%'", c2: 'compra >= 500', out2: "'Descuento 10%'", out3: "'Sin descuento'" },
+          10: { proc: 'Universidad', read: 'Leer edad, nota', c1: 'edad>=18 Y nota>=90', out1: "'BECA COMPLETA'", c2: 'edad>=18 O nota>=75', out2: "'ADMITIDO'", out3: "'RECHAZADO'" }
+        }[id];
+
+        return `
+          <svg class="flowchart-svg" viewBox="0 0 740 520">
+            ${defs}
+            <line x1="320" y1="40" x2="320" y2="150" stroke="#334155" stroke-width="2.5" />
+            <polyline points="200,190 125,190 125,435 320,435" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="440,190 525,190 525,255" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <polyline points="410,295 365,295 365,435 320,435" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="640,295 665,295 665,435 320,435" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <line x1="320" y1="435" x2="320" y2="480" stroke="#334155" stroke-width="2.5" />
+
+            <text x="150" y="180" font-size="14.5" font-weight="bold" fill="#16a34a">V</text>
+            <text x="465" y="180" font-size="14.5" font-weight="bold" fill="#dc2626">F (SiNo)</text>
+            <text x="380" y="285" font-size="14.5" font-weight="bold" fill="#16a34a">V</text>
+            <text x="645" y="285" font-size="14.5" font-weight="bold" fill="#dc2626">F</text>
+
+            <g class="fc-node fc-base">
+              <ellipse cx="320" cy="28" rx="125" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="35" text-anchor="middle" font-size="14.5" font-weight="bold">Proceso ${cfg.proc}</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="225,80 435,80 410,122 200,122" fill="#fbcfe8" stroke="#db2777" stroke-width="2.5"/>
+              <text x="315" y="106" text-anchor="middle" font-size="14" font-weight="bold">${cfg.read}</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="320,150 440,190 320,230 200,190" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="320" y="195" text-anchor="middle" font-size="13" font-weight="bold">${cfg.c1}</text>
+            </g>
+            <g class="fc-node fc-branch-1">
+              <polygon points="30,270 220,270 205,312 15,312" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="117" y="296" text-anchor="middle" font-size="13.5" font-weight="bold">${cfg.out1}</text>
+            </g>
+            <g class="fc-node fc-cond-2">
+              <polygon points="525,255 640,295 525,335 410,295" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="525" y="300" text-anchor="middle" font-size="13" font-weight="bold">${cfg.c2}</text>
+            </g>
+            <g class="fc-node fc-branch-2">
+              <polygon points="275,360 460,360 445,402 260,402" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="360" y="386" text-anchor="middle" font-size="13.5" font-weight="bold">${cfg.out2}</text>
+            </g>
+            <g class="fc-node fc-branch-3">
+              <polygon points="575,360 740,360 725,402 560,402" fill="#fecaca" stroke="#dc2626" stroke-width="2.5"/>
+              <text x="650" y="386" text-anchor="middle" font-size="13.5" font-weight="bold">${cfg.out3}</text>
+            </g>
+            <g class="fc-node fc-base">
+              <ellipse cx="320" cy="490" rx="95" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="320" y="497" text-anchor="middle" font-size="14.5" font-weight="bold">FinProceso</text>
+            </g>
+          </svg>
+        `;
+      }
+
+      // Ejercicio 11: Si Anidado en Rama Verdadera
+      if (id === 11) {
+        return `
+          <svg class="flowchart-svg" viewBox="0 0 740 520">
+            ${defs}
+            <line x1="410" y1="40" x2="410" y2="150" stroke="#334155" stroke-width="2.5" />
+            <polyline points="280,190 225,190 225,255" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="540,190 635,190 635,435 410,435" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <polyline points="105,295 85,295 85,435 410,435" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="345,295 385,295 385,435 410,435" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <line x1="410" y1="435" x2="410" y2="480" stroke="#334155" stroke-width="2.5" />
+
+            <text x="240" y="180" font-size="14.5" font-weight="bold" fill="#16a34a">V</text>
+            <text x="565" y="180" font-size="14.5" font-weight="bold" fill="#dc2626">F (SiNo)</text>
+            <text x="88" y="285" font-size="14.5" font-weight="bold" fill="#16a34a">V</text>
+            <text x="355" y="285" font-size="14.5" font-weight="bold" fill="#dc2626">F</text>
+
+            <g class="fc-node fc-base">
+              <ellipse cx="410" cy="28" rx="125" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="410" y="35" text-anchor="middle" font-size="14.5" font-weight="bold">Proceso Contratacion</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="275,80 545,80 520,122 250,122" fill="#fbcfe8" stroke="#db2777" stroke-width="2.5"/>
+              <text x="395" y="106" text-anchor="middle" font-size="13" font-weight="bold">Leer edad, exp | sancionado&lt;-Falso</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="410,150 540,190 410,230 280,190" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="410" y="195" text-anchor="middle" font-size="13" font-weight="bold">edad>=18 Y NO sancionado</text>
+            </g>
+            <g class="fc-node fc-cond-2">
+              <polygon points="225,255 345,295 225,335 105,295" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="225" y="300" text-anchor="middle" font-size="13" font-weight="bold">exp>=5 O edad>=30</text>
+            </g>
+            <g class="fc-node fc-branch-1">
+              <polygon points="10,360 170,360 155,402 0,402" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="85" y="386" text-anchor="middle" font-size="13.5" font-weight="bold">'CONTRATADO'</text>
+            </g>
+            <g class="fc-node fc-branch-2">
+              <polygon points="295,360 485,360 470,402 280,402" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="382" y="386" text-anchor="middle" font-size="13.5" font-weight="bold">'EN EVALUACION'</text>
+            </g>
+            <g class="fc-node fc-branch-3">
+              <polygon points="535,270 740,270 725,312 520,312" fill="#fecaca" stroke="#dc2626" stroke-width="2.5"/>
+              <text x="630" y="296" text-anchor="middle" font-size="13" font-weight="bold">'NO CUMPLE REQUISITOS'</text>
+            </g>
+            <g class="fc-node fc-base">
+              <ellipse cx="410" cy="490" rx="95" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="410" y="497" text-anchor="middle" font-size="14.5" font-weight="bold">FinProceso</text>
+            </g>
+          </svg>
+        `;
+      }
+
+      // Ejercicio 12: Proyecto Final
+      if (id === 12) {
+        return `
+          <svg class="flowchart-svg" viewBox="0 0 800 560">
+            ${defs}
+            <line x1="450" y1="40" x2="450" y2="135" stroke="#334155" stroke-width="2.5" />
+            <polyline points="315,175 250,175 250,225" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="585,175 685,175 685,485 450,485" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <polyline points="140,265 95,265 95,485 450,485" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="360,265 400,265 400,315" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <polyline points="280,355 250,355 250,485 450,485" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+            <polyline points="520,355 545,355 545,485 450,485" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+            <line x1="450" y1="485" x2="450" y2="525" stroke="#334155" stroke-width="2.5" />
+
+            <g class="fc-node fc-base">
+              <ellipse cx="450" cy="26" rx="120" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="450" y="33" text-anchor="middle" font-size="14.5" font-weight="bold">Proceso ProyectoFinal</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="310,75 590,75 565,115 285,115" fill="#fbcfe8" stroke="#db2777" stroke-width="2.5"/>
+              <text x="435" y="100" text-anchor="middle" font-size="13" font-weight="bold">Leer asist, nota | sancionado&lt;-Falso</text>
+            </g>
+            <g class="fc-node fc-base">
+              <polygon points="450,135 585,175 450,215 315,175" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="450" y="180" text-anchor="middle" font-size="13" font-weight="bold">asist>=80 Y NO sancionado</text>
+            </g>
+            <g class="fc-node fc-cond-2">
+              <polygon points="250,225 360,265 250,305 140,265" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="250" y="270" text-anchor="middle" font-size="13" font-weight="bold">nota >= 90</text>
+            </g>
+            <g class="fc-node fc-branch-1">
+              <polygon points="10,335 185,335 170,375 0,375" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="92" y="360" text-anchor="middle" font-size="12.5" font-weight="bold">'ESTUDIANTE DE HONOR'</text>
+            </g>
+            <g class="fc-node fc-cond-3">
+              <polygon points="400,315 520,355 400,395 280,355" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+              <text x="400" y="360" text-anchor="middle" font-size="12.5" font-weight="bold">nota>=70 O asist>=95</text>
+            </g>
+            <g class="fc-node fc-branch-2">
+              <polygon points="175,420 330,420 315,460 160,460" fill="#bbf7d0" stroke="#16a34a" stroke-width="2.5"/>
+              <text x="245" y="445" text-anchor="middle" font-size="13.5" font-weight="bold">'APROBADO'</text>
+            </g>
+            <g class="fc-node fc-branch-3">
+              <polygon points="465,420 625,420 610,460 450,460" fill="#fecaca" stroke="#dc2626" stroke-width="2.5"/>
+              <text x="537" y="445" text-anchor="middle" font-size="13.5" font-weight="bold">'REPROBADO'</text>
+            </g>
+            <g class="fc-node fc-branch-4">
+              <polygon points="590,260 795,260 780,302 575,302" fill="#fecaca" stroke="#dc2626" stroke-width="2.5"/>
+              <text x="685" y="286" text-anchor="middle" font-size="12.5" font-weight="bold">'NO CUMPLE REQUISITOS'</text>
+            </g>
+            <g class="fc-node fc-base">
+              <ellipse cx="450" cy="535" rx="95" ry="22" fill="#fde047" stroke="#ca8a04" stroke-width="2.5"/>
+              <text x="450" y="542" text-anchor="middle" font-size="14.5" font-weight="bold">FinProceso</text>
+            </g>
+          </svg>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // RENDERIZADO VERTICAL COMPLETO
+    // =========================================================================
+    function renderAllExercises() {
+      const container = document.getElementById('exercises-container');
+      let html = '';
+
+      exercisesData.forEach(ex => {
+        const stepsList = ex.steps.map(s => `<li class="mb-2">${s}</li>`).join('');
+        
+        const inputsHtml = ex.inputs.map(inp => {
+          if (inp.type === 'select') {
+            const opts = inp.options.map(o => `<option value="${o.value}">${o.text}</option>`).join('');
+            return `
+              <div class="mb-3">
+                <label class="form-label form-label-lg">${inp.label}</label>
+                <select id="inp-ex${ex.id}-${inp.id}" class="form-select">
+                  ${opts}
+                </select>
+              </div>
+            `;
+          }
+          return `
+            <div class="mb-3">
+              <label class="form-label form-label-lg">${inp.label}</label>
+              <input type="${inp.type}" id="inp-ex${ex.id}-${inp.id}" class="form-control" placeholder="${inp.placeholder}" value="${inp.defaultVal}">
+            </div>
+          `;
+        }).join('');
+
+        html += `
+          <article class="exercise-card exercise-item" id="ejercicio-${ex.id}" data-category="${ex.category}">
+            
+            <!-- Encabezado del Ejercicio -->
+            <div class="exercise-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge-step">ALGORITMO #${ex.id}</span>
+                  <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle badge-category">${ex.badge}</span>
+                </div>
+                <h3 class="exercise-title text-dark mb-0">${ex.title}</h3>
+              </div>
+              <div class="form-check form-switch bg-white px-4 py-2 rounded-3 border shadow-sm">
+                <input class="form-check-input check-done ms-0 me-2" type="checkbox" id="chk-ex-${ex.id}" style="width: 2.2rem; height: 1.25rem;">
+                <label class="form-check-label fw-bold text-success" for="chk-ex-${ex.id}" style="font-size: 1.05rem;">
+                  Captura Guardada
+                </label>
+              </div>
+            </div>
+
+            <!-- Cuerpo 100% Vertical (Uno debajo del otro) -->
+            <div class="exercise-body">
+
+              <!-- PARTE 1: EXPLICACIÓN Y ENUNCIADO -->
+              <div class="vertical-section">
+                <div class="section-title">
+                  <i class="bi bi-journal-text text-primary fs-4"></i>
+                  1. Ficha Técnica, Contexto y Enunciado Completo
+                </div>
+                <div class="info-grid mb-3">
+                  <div class="info-box">
+                    <div class="info-box-title">🎯 Concepto Fundamental</div>
+                    <p class="info-box-text">${ex.concept}</p>
+                  </div>
+                  <div class="info-box">
+                    <div class="info-box-title">🌎 Contexto Real</div>
+                    <p class="info-box-text">${ex.context}</p>
+                  </div>
+                  <div class="info-box">
+                    <div class="info-box-title">📝 Enunciado del Problema</div>
+                    <p class="info-box-text fw-bold">${ex.statement}</p>
+                  </div>
+                </div>
+                <div class="p-3 bg-light rounded-3 border logic-box">
+                  <div class="row align-items-center">
+                    <div class="col-md-7">
+                      <strong class="text-dark d-block mb-2" style="font-size: 1.05rem;"><i class="bi bi-list-ol text-primary me-2"></i>Lógica de Ejecución Paso a Paso:</strong>
+                      <ol class="mb-0 ps-3">${stepsList}</ol>
+                    </div>
+                    <div class="col-md-5 mt-3 mt-md-0 border-start-md">
+                      <strong class="text-dark d-block mb-2" style="font-size: 1.05rem;"><i class="bi bi-sliders text-primary me-2"></i>Operadores Utilizados:</strong>
+                      <code class="d-block p-2 bg-white rounded border text-dark fw-bold" style="font-size: 0.98rem;">${ex.operators}</code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PARTE 2: CÓDIGO FUENTE PSEINT -->
+              <div class="vertical-section">
+                <div class="section-title">
+                  <i class="bi bi-code-slash text-primary fs-4"></i>
+                  2. Código Fuente en PSeInt (.psc)
+                </div>
+                <div class="code-window">
+                  <div class="code-window-header">
+                    <span><i class="bi bi-file-earmark-code me-2 text-info fs-5"></i> Ejercicio_${String(ex.id).padStart(2, '0')}.psc</span>
+                    <button class="btn btn-sm btn-outline-light py-1 px-3 copy-btn fw-bold" data-id="${ex.id}" style="font-size: 0.95rem;">
+                      <i class="bi bi-clipboard me-1"></i> Copiar Código
+                    </button>
+                  </div>
+                  <pre id="raw-code-${ex.id}">${highlightPSeInt(ex.pscCode)}</pre>
+                </div>
+              </div>
+
+              <!-- PARTE 3: DIAGRAMA DE FLUJO -->
+              <div class="vertical-section">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                  <div class="section-title mb-0">
+                    <i class="bi bi-diagram-3-fill text-primary fs-4"></i>
+                    3. Simulación del Diagrama de Flujo (Estilo PSeInt)
+                  </div>
+                  <span class="badge bg-info text-dark px-3 py-2 fw-bold" style="font-size: 0.92rem;">Ruta activa iluminada según los datos ingresados</span>
+                </div>
+                <div class="flowchart-window" id="flowchart-box-${ex.id}">
+                  ${generateFlowchartSVG(ex.id)}
+                </div>
+              </div>
+
+              <!-- PARTE 4: CONSOLA DE EJECUCIÓN -->
+              <div class="vertical-section">
+                <div class="section-title">
+                  <i class="bi bi-terminal-fill text-success fs-4"></i>
+                  4. Ventana de Ejecución Interactiva (Para Captura de Pantalla)
+                </div>
+                <div class="execution-panel">
+                  <div class="mb-3">
+                    <span class="badge bg-secondary mb-3 px-3 py-2 fw-bold" style="font-size: 0.92rem;">Panel de Entrada de Datos por Teclado (Leer)</span>
+                    ${inputsHtml}
+                    <button class="btn btn-primary btn-exec w-100 mt-2" onclick="executeExercise(${ex.id})">
+                      <i class="bi bi-play-fill me-2 fs-5"></i> Ejecutar Algoritmo y Actualizar Diagrama
+                    </button>
+                  </div>
+
+                  <!-- Pantalla de Terminal PSeInt -->
+                  <div class="terminal-window">
+                    <div class="terminal-bar">
+                      <div class="terminal-dots">
+                        <span class="dot dot-r"></span>
+                        <span class="dot dot-y"></span>
+                        <span class="dot dot-g"></span>
+                      </div>
+                      <span class="text-light font-mono fw-semibold" style="font-size: 1rem;">Consola PSeInt - Proceso #${ex.id}</span>
+                      <span class="badge bg-success bg-opacity-25 text-success font-mono px-3 py-1" style="font-size: 0.9rem;">Estado: Activo</span>
+                    </div>
+                    <div class="terminal-screen font-mono" id="terminal-out-${ex.id}">
+                      <!-- Contenido cargado dinámicamente -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </article>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // =========================================================================
+    // MOTOR DE EJECUCIÓN Y RESALTADO DE RUTA EN EL DIAGRAMA
+    // =========================================================================
+    function highlightFlowchartPath(exId, activeClasses) {
+      const box = document.getElementById(`flowchart-box-${exId}`);
+      if (!box) return;
+      const allNodes = box.querySelectorAll('.fc-node');
+      allNodes.forEach(node => {
+        node.classList.remove('fc-active', 'fc-inactive');
+        const isMatched = activeClasses.some(cls => node.classList.contains(cls));
+        if (isMatched) {
+          node.classList.add('fc-active');
+        } else {
+          node.classList.add('fc-inactive');
+        }
+      });
+    }
+
+    function executeExercise(id) {
+      const term = document.getElementById(`terminal-out-${id}`);
+      const getVal = (field) => document.getElementById(`inp-ex${id}-${field}`)?.value ?? '';
+
+      if (id === 1) {
+        const nombre = getVal('nombre').trim() || 'Carlos Santana';
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese su nombre</div>
+          <div class="term-input">&gt; ${escapeHtml(nombre)}</div>
+          <div class="term-out-ok mt-2">Bienvenido ${escapeHtml(nombre)}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(1, ['fc-step-all']);
+      }
+
+      else if (id === 2) {
+        const n1 = parseInt(getVal('n1') || '0', 10);
+        const n2 = parseInt(getVal('n2') || '0', 10);
+        const suma = n1 + n2;
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese numero 1</div>
+          <div class="term-input">&gt; ${n1}</div>
+          <div class="term-prompt">Ingrese numero 2</div>
+          <div class="term-input">&gt; ${n2}</div>
+          <div class="term-out-ok mt-2">Resultado: ${suma}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(2, ['fc-step-all']);
+      }
+
+      else if (id === 3) {
+        const edad = parseInt(getVal('edad') || '0', 10);
+        const esMayor = edad >= 18;
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese edad</div>
+          <div class="term-input">&gt; ${edad}</div>
+          <div class="${esMayor ? 'term-out-ok' : 'term-out-warn'} mt-2">${esMayor ? 'Es mayor de edad' : 'Es menor de edad'}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(3, ['fc-base', esMayor ? 'fc-branch-true' : 'fc-branch-false']);
+      }
+
+      else if (id === 4) {
+        const numero = parseInt(getVal('numero') || '0', 10);
+        const esPos = numero > 0;
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese numero</div>
+          <div class="term-input">&gt; ${numero}</div>
+          <div class="${esPos ? 'term-out-ok' : 'term-out-warn'} mt-2">${esPos ? 'Numero positivo' : 'Numero negativo o cero'}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(4, ['fc-base', esPos ? 'fc-branch-true' : 'fc-branch-false']);
+      }
+
+      else if (id === 5) {
+        const nota = parseInt(getVal('nota') || '0', 10);
+        let msg = '';
+        let cls = 'term-out-ok';
+        let path = ['fc-base'];
+
+        if (nota >= 90) {
+          msg = 'EXCELENTE';
+          path.push('fc-branch-1');
+        } else if (nota >= 70) {
+          msg = 'APROBADO';
+          path.push('fc-cond-2', 'fc-branch-2');
+        } else {
+          msg = 'REPROBADO';
+          cls = 'term-out-err';
+          path.push('fc-cond-2', 'fc-branch-3');
+        }
+
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese nota</div>
+          <div class="term-input">&gt; ${nota}</div>
+          <div class="${cls} mt-2">${msg}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(5, path);
+      }
+
+      else if (id === 6) {
+        const compra = parseFloat(getVal('compra') || '0');
+        let msg = '';
+        let path = ['fc-base'];
+
+        if (compra >= 1000) {
+          msg = 'Descuento 20%';
+          path.push('fc-branch-1');
+        } else if (compra >= 500) {
+          msg = 'Descuento 10%';
+          path.push('fc-cond-2', 'fc-branch-2');
+        } else {
+          msg = 'Sin descuento';
+          path.push('fc-cond-2', 'fc-branch-3');
+        }
+
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese monto compra</div>
+          <div class="term-input">&gt; ${compra}</div>
+          <div class="term-out-ok mt-2">${msg}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(6, path);
+      }
+
+      else if (id === 7) {
+        const asistencia = parseInt(getVal('asistencia') || '0', 10);
+        const nota = parseInt(getVal('nota') || '0', 10);
+        const aprueba = asistencia >= 80 && nota >= 70;
+
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese asistencia</div>
+          <div class="term-input">&gt; ${asistencia}</div>
+          <div class="term-prompt">Ingrese nota</div>
+          <div class="term-input">&gt; ${nota}</div>
+          <div class="${aprueba ? 'term-out-ok' : 'term-out-err'} mt-2">${aprueba ? 'APROBADO' : 'REPROBADO'}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(7, ['fc-base', aprueba ? 'fc-branch-true' : 'fc-branch-false']);
+      }
+
+      else if (id === 8) {
+        const edad = parseInt(getVal('edad') || '0', 10);
+        const desc = edad < 12 || edad > 60;
+
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese edad</div>
+          <div class="term-input">&gt; ${edad}</div>
+          <div class="${desc ? 'term-out-ok' : 'term-out-warn'} mt-2">${desc ? 'Tiene descuento' : 'No tiene descuento'}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(8, ['fc-base', desc ? 'fc-branch-true' : 'fc-branch-false']);
+      }
+
+      else if (id === 9) {
+        const disponible = getVal('disponible') === 'true';
+        const noDisponible = !disponible;
+
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">[Asignación Interna] disponible &lt;- ${disponible ? 'Verdadero' : 'Falso'}</div>
+          ${noDisponible
+            ? `<div class="term-out-warn mt-2">Producto agotado</div>`
+            : `<div class="term-sys mt-2">(La condición NO disponible fue Falsa, no se imprime mensaje en pantalla)</div>`
+          }
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(9, ['fc-base', noDisponible ? 'fc-branch-true' : 'fc-branch-false']);
+      }
+
+      else if (id === 10) {
+        const edad = parseInt(getVal('edad') || '0', 10);
+        const nota = parseInt(getVal('nota') || '0', 10);
+        let msg = '';
+        let cls = 'term-out-ok';
+        let path = ['fc-base'];
+
+        if (edad >= 18 && nota >= 90) {
+          msg = 'BECA COMPLETA';
+          path.push('fc-branch-1');
+        } else if (edad >= 18 || nota >= 75) {
+          msg = 'ADMITIDO';
+          path.push('fc-cond-2', 'fc-branch-2');
+        } else {
+          msg = 'RECHAZADO';
+          cls = 'term-out-err';
+          path.push('fc-cond-2', 'fc-branch-3');
+        }
+
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese edad</div>
+          <div class="term-input">&gt; ${edad}</div>
+          <div class="term-prompt">Ingrese nota</div>
+          <div class="term-input">&gt; ${nota}</div>
+          <div class="${cls} mt-2">${msg}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(10, path);
+      }
+
+      else if (id === 11) {
+        const edad = parseInt(getVal('edad') || '0', 10);
+        const experiencia = parseInt(getVal('experiencia') || '0', 10);
+        const sancionado = getVal('sancionado') === 'true';
+        let msg = '';
+        let cls = 'term-out-ok';
+        let path = ['fc-base'];
+
+        if (edad >= 18 && !sancionado) {
+          path.push('fc-cond-2');
+          if (experiencia >= 5 || edad >= 30) {
+            msg = 'CONTRATADO';
+            path.push('fc-branch-1');
+          } else {
+            msg = 'EN EVALUACION';
+            cls = 'term-out-warn';
+            path.push('fc-branch-2');
+          }
+        } else {
+          msg = 'NO CUMPLE REQUISITOS';
+          cls = 'term-out-err';
+          path.push('fc-branch-3');
+        }
+
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese edad</div>
+          <div class="term-input">&gt; ${edad}</div>
+          <div class="term-prompt">Ingrese experiencia</div>
+          <div class="term-input">&gt; ${experiencia}</div>
+          <div class="${cls} mt-2">${msg}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(11, path);
+      }
+
+      else if (id === 12) {
+        const asistencia = parseInt(getVal('asistencia') || '0', 10);
+        const nota = parseInt(getVal('nota') || '0', 10);
+        const sancionado = getVal('sancionado') === 'true';
+        let msg = '';
+        let cls = 'term-out-ok';
+        let path = ['fc-base'];
+
+        if (asistencia >= 80 && !sancionado) {
+          path.push('fc-cond-2');
+          if (nota >= 90) {
+            msg = 'ESTUDIANTE DE HONOR';
+            path.push('fc-branch-1');
+          } else {
+            path.push('fc-cond-3');
+            if (nota >= 70 || asistencia >= 95) {
+              msg = 'APROBADO';
+              path.push('fc-branch-2');
+            } else {
+              msg = 'REPROBADO';
+              cls = 'term-out-err';
+              path.push('fc-branch-3');
+            }
+          }
+        } else {
+          msg = 'NO CUMPLE REQUISITOS';
+          cls = 'term-out-err';
+          path.push('fc-branch-4');
+        }
+
+        term.innerHTML = `
+          <div class="term-sys">*** Ejecución Iniciada. ***</div>
+          <div class="term-prompt">Ingrese asistencia</div>
+          <div class="term-input">&gt; ${asistencia}</div>
+          <div class="term-prompt">Ingrese nota</div>
+          <div class="term-input">&gt; ${nota}</div>
+          <div class="${cls} mt-2">${msg}</div>
+          <div class="term-sys mt-2">*** Ejecución Finalizada. ***</div>
+        `;
+        highlightFlowchartPath(12, path);
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // =========================================================================
+    // INICIALIZACIÓN DE EVENTOS
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAllExercises();
+
+      // Ejecutar automáticamente los 12 ejercicios para dejarlos con datos y diagramas listos
+      for (let i = 1; i <= 12; i++) {
+        executeExercise(i);
+      }
+
+      // Evento Copiar Código
+      const toastEl = document.getElementById('copyToast');
+      const toast = new bootstrap.Toast(toastEl, { delay: 2000 });
+
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const exId = parseInt(btn.getAttribute('data-id'), 10);
+          const exObj = exercisesData.find(e => e.id === exId);
+          if (exObj) {
+            navigator.clipboard.writeText(exObj.pscCode).then(() => toast.show());
+          }
+        });
+      });
+
+      // Contador de Progreso
+      const checks = document.querySelectorAll('.check-done');
+      const navProgress = document.getElementById('nav-progress');
+      checks.forEach(ch => {
+        ch.addEventListener('change', () => {
+          const done = Array.from(checks).filter(c => c.checked).length;
+          navProgress.textContent = `${done} / 12`;
+        });
+      });
+
+      // Filtros y Búsqueda
+      const searchInput = document.getElementById('searchInput');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      let activeCategory = 'all';
+
+      function applyFilters() {
+        const q = searchInput.value.toLowerCase().trim();
+        document.querySelectorAll('.exercise-item').forEach(card => {
+          const cat = card.getAttribute('data-category');
+          const text = card.innerText.toLowerCase();
+          const matchCat = activeCategory === 'all' || cat === activeCategory;
+          const matchText = q === '' || text.includes(q);
+          card.style.display = (matchCat && matchText) ? 'block' : 'none';
+        });
+      }
+
+      searchInput.addEventListener('input', applyFilters);
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('active', 'btn-dark');
+            b.classList.add('btn-outline-primary');
+          });
+          btn.classList.remove('btn-outline-primary');
+          btn.classList.add('active', 'btn-dark');
+          activeCategory = btn.getAttribute('data-filter');
+          applyFilters();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
